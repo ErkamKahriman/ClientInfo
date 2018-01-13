@@ -12,7 +12,7 @@ class ClientInfoCommand extends PluginCommand {
 
     public $plugin;
 
-    const CINFO = C::GRAY."=> ".C::GOLD . "Client Info" .C::GRAY. " <=" .C::RESET;
+    const CINFO = C::GRAY."=> ".C::BLUE . "Client Info" .C::GRAY. " <=" .C::RESET;
     const USAGE = C::WHITE . "- /cinfo (player)";
     const NOPREM = C::RED . "You don't have permissions to do that.";
     const PLAYERNOTON = C::RED . "Player is not Online!";
