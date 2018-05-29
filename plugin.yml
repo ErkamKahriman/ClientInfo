@@ -1,7 +1,7 @@
 name: ClientInfo
-main: erkamkahriman\ClientInfo
-api: 3.0.0
-version: 1.1
+main: ErkamKahriman\ClientInfo\ClientInfo
+api: 3.0.1
+version: 1.2
 author: ErkamKahriman
 website: http://erkamkahriman.ml
 prefix: "§eClientInfo§r"
