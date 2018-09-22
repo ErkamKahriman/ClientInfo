@@ -4,64 +4,61 @@ namespace ErkamKahriman\ClientInfo;
 
 use pocketmine\command\CommandSender;
 use pocketmine\command\PluginCommand;
+use pocketmine\network\mcpe\protocol\types\CommandParameter;
 use pocketmine\Player;
-use pocketmine\Server;
 use pocketmine\utils\TextFormat as C;
 
 class ClientInfoCommand extends PluginCommand {
 
-    public $plugin;
-
     const CINFO = C::GRAY."=> ".C::BLUE . "Client Info" .C::GRAY. " <=" .C::RESET;
-    const USAGE = C::WHITE . "- /cinfo (player)";
-    const NOPREM = C::RED . "You don't have permissions to do that.";
-    const PLAYERNOTON = C::RED . "Player is not Online!";
-    const PLAYERNOTEXIST = C::RED . "Player doesn't exists!";
 
-    public function __construct(string $name, ClientInfo $plugin){
-        $this->plugin = $plugin;
-        parent::__construct($name, $plugin);
+    public function __construct(ClientInfo $plugin){
+        parent::__construct("clientinfo", $plugin);
+        $this->setPermission("clientinfo");
+        $this->setDescription("Get Informations about a Client.");
+        if(ClientInfo::getInstance()->getServer()->getName() == "Altay"){
+            $this->setParameter(new CommandParameter("player", CommandParameter::ARG_TYPE_TARGET, false), 0);
+        }
+        $this->setAliases(["cinfo"]);
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args){
-        if ($sender->hasPermission("cinfo.use")) {
-            if (!empty($args[0])) {
-                if (file_exists(Server::getInstance()->getDataPath() . "players/" . strtolower($args[0]) . ".dat")) {
-                    $spieler = $this->plugin->getServer()->getPlayer(strtolower($args[0]));
-                    if ($spieler->isOnline()) {
-                        $sender->sendMessage(self::CINFO);
-                        $sender->sendMessage(C::YELLOW . "Username: " . C::WHITE . $spieler->getName());
-                        $sender->sendMessage(C::YELLOW . "NameTag: " . C::RESET . $spieler->getNameTag());
-                        $sender->sendMessage(C::YELLOW . "SystemOS: " . C::WHITE . $this->getOS($spieler));
-                        $sender->sendMessage(C::YELLOW . "Device: " . C::WHITE . $spieler->getDeviceModel());
-                        $sender->sendMessage(C::YELLOW . "Language: " . C::WHITE . $spieler->getLocale());
-                        $sender->sendMessage(C::YELLOW . "IP: " . C::WHITE . $spieler->getAddress());
-                    } else {
-                        $sender->sendMessage(self::PLAYERNOTON);
-                    }
-                } else {
-                    $sender->sendMessage(self::PLAYERNOTEXIST);
+        if($sender->hasPermission("clientinfo")){
+            if(!empty($args[0]) && isset($args[0])){
+                $spieler = ClientInfo::getInstance()->getServer()->getPlayer($args[0]);
+                if($spieler != null){
+                    $sender->sendMessage(self::CINFO);
+                    $sender->sendMessage(C::YELLOW."Username: ".C::WHITE.$spieler->getName());
+                    $sender->sendMessage(C::YELLOW."NameTag: ".C::RESET.$spieler->getNameTag());
+                    $sender->sendMessage(C::YELLOW."DeviceOS: ".C::WHITE.$this->getOS($spieler));
+                    $sender->sendMessage(C::YELLOW."DeviceModel: ".C::WHITE.$spieler->getDeviceModel());
+                    $sender->sendMessage(C::YELLOW."Language: ".C::WHITE.$spieler->getLocale());
+                    $sender->sendMessage(C::YELLOW."IP: ".C::WHITE.$spieler->getAddress());
+                } else{
+                    $sender->sendMessage("§cPlayer couldn't be found.");
                 }
-            } else {
-                $sender->sendMessage(self::USAGE);
+            } else{
+                $sender->sendMessage("§eYou need to specify a player.");
             }
-        } else {
-            $sender->sendMessage(self::USAGE);
+        } else{
+            $sender->sendMessage("§cYou don't have permissions to do that.");
         }
     }
 
     public function getOS(Player $player){
         switch ($player->getDeviceOS()){
-            case 1:
+            case Player::OS_ANDROID:
                 return "Android";
-            case 2:
+            case Player::OS_IOS:
                 return "IOS";
-            case 3:
+            case Player::OS_MAC:
                 return "Mac";
-            case 4:
+            case Player::OS_FIREOS:
                 return "FireOS";
-            case 7:
+            case Player::OS_WINDOWS:
                 return "Windows";
+            case Player::OS_DEDICATED:
+                return "Dedicated";
             default:
                 return "Unknown";
         }

@@ -1,5 +1,5 @@
 # ClientInfo
 
-Command: /cinfo (player)
+Command: /clientinfo (player)
 
-Permission to use: cinfo.use
+Permission to use: clientinfo
