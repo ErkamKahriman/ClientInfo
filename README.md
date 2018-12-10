@@ -1,5 +1,5 @@
 # ClientInfo
 
-Command: /clientinfo (player)
+Command: /clientinfo (player) (perm: "clientinfo")
 
-Permission to use: clientinfo
+Alias: /cinfo (player)

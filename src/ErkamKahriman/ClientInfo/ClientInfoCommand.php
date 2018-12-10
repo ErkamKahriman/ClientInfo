@@ -6,17 +6,14 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\PluginCommand;
 use pocketmine\network\mcpe\protocol\types\CommandParameter;
 use pocketmine\Player;
-use pocketmine\utils\TextFormat as C;
 
 class ClientInfoCommand extends PluginCommand {
-
-    const CINFO = C::GRAY."=> ".C::BLUE . "Client Info" .C::GRAY. " <=" .C::RESET;
 
     public function __construct(ClientInfo $plugin){
         parent::__construct("clientinfo", $plugin);
         $this->setPermission("clientinfo");
         $this->setDescription("Get Informations about a Client.");
-        if(ClientInfo::getInstance()->getServer()->getName() == "Altay"){
+        if(ClientInfo::getInstance()->getServer()->getName() === "Altay"){
             $this->setParameter(new CommandParameter("player", CommandParameter::ARG_TYPE_TARGET, false), 0);
         }
         $this->setAliases(["cinfo"]);
@@ -24,16 +21,16 @@ class ClientInfoCommand extends PluginCommand {
 
     public function execute(CommandSender $sender, string $commandLabel, array $args){
         if($sender->hasPermission("clientinfo")){
-            if(!empty($args[0]) && isset($args[0])){
+            if(isset($args[0]) && !empty($args[0])){
                 $spieler = ClientInfo::getInstance()->getServer()->getPlayer($args[0]);
-                if($spieler != null){
-                    $sender->sendMessage(self::CINFO);
-                    $sender->sendMessage(C::YELLOW."Username: ".C::WHITE.$spieler->getName());
-                    $sender->sendMessage(C::YELLOW."NameTag: ".C::RESET.$spieler->getNameTag());
-                    $sender->sendMessage(C::YELLOW."DeviceOS: ".C::WHITE.$this->getOS($spieler));
-                    $sender->sendMessage(C::YELLOW."DeviceModel: ".C::WHITE.$spieler->getDeviceModel());
-                    $sender->sendMessage(C::YELLOW."Language: ".C::WHITE.$spieler->getLocale());
-                    $sender->sendMessage(C::YELLOW."IP: ".C::WHITE.$spieler->getAddress());
+                if($spieler !== null){
+                    $sender->sendMessage("§7» §9Client Info §7«");
+                    $sender->sendMessage("§eUsername: §f".$spieler->getName());
+                    $sender->sendMessage("§eNameTag: §f".$spieler->getNameTag());
+                    $sender->sendMessage("§eDeviceOS: §f".$this->getOS($spieler));
+                    $sender->sendMessage("§eDeviceModel: §f".ClientInfo::getInstance()->getDeviceModel($spieler->getName()));
+                    $sender->sendMessage("§eLanguage: §f".$spieler->getLocale());
+                    $sender->sendMessage("§eIP: §f".$spieler->getAddress());
                 } else{
                     $sender->sendMessage("§cPlayer couldn't be found.");
                 }
@@ -46,18 +43,18 @@ class ClientInfoCommand extends PluginCommand {
     }
 
     public function getOS(Player $player){
-        switch ($player->getDeviceOS()){
-            case Player::OS_ANDROID:
+        switch(ClientInfo::getInstance()->getDeviceOS($player->getName())){
+            case 1:
                 return "Android";
-            case Player::OS_IOS:
+            case 2:
                 return "IOS";
-            case Player::OS_MAC:
+            case 3:
                 return "Mac";
-            case Player::OS_FIREOS:
+            case 4:
                 return "FireOS";
-            case Player::OS_WINDOWS:
+            case 7:
                 return "Windows";
-            case Player::OS_DEDICATED:
+            case 9:
                 return "Dedicated";
             default:
                 return "Unknown";
