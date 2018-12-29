@@ -14,11 +14,9 @@ class EventListener implements Listener {
         if($packet instanceof LoginPacket){
             $name = strtolower($packet->username);
             if(!in_array($name, ClientInfo::$devicemodel)){
-                ClientInfo::$devicemodel[] = $name;
                 ClientInfo::$devicemodel[$name] = $packet->clientData["DeviceModel"];
             }
             if(!in_array($name, ClientInfo::$deviceos)){
-                ClientInfo::$deviceos[] = $name;
                 ClientInfo::$deviceos[$name] = $packet->clientData["DeviceOS"];
             }
         }
@@ -28,10 +26,10 @@ class EventListener implements Listener {
         $player = $event->getPlayer();
         $name = $player->getName();
         if(in_array($name, ClientInfo::$devicemodel)){
-            unset(ClientInfo::$devicemodel[array_search($name, ClientInfo::$devicemodel)]);
+            unset(ClientInfo::$devicemodel[$name]);
         }
         if(in_array($name, ClientInfo::$deviceos)){
-            unset(ClientInfo::$deviceos[array_search($name, ClientInfo::$deviceos)]);
+            unset(ClientInfo::$deviceos[$name]);
         }
     }
 }

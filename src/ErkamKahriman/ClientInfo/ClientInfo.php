@@ -28,7 +28,7 @@ class ClientInfo extends PluginBase {
         return ClientInfo::$devicemodel[$name];
     }
 
-    public function getDeviceOS(string $name){
+    public function getDeviceOS(string $name): int{
         return ClientInfo::$deviceos[$name];
     }
 }
